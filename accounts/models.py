@@ -90,6 +90,13 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
+    
+    def get_role(self):
+        if self.role == 1:
+            user_role = 'Vendor'
+        elif self.role == 2:
+            user_role = 'Customer'
+        return user_role
 
 # setting the blank and null equal to two.because we don't know what will be the values of these address and all these things.
 # also, we are going to send the signals, post sales signals to create these user profile objects.
