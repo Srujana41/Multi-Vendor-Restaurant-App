@@ -144,3 +144,13 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+# Email configuratiom
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+# EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER= 'srujana.app.dev@gmail.com'
+EMAIL_HOST_PASSWORD= 'wdsxawcwlocaqqmx'
+EMAIL_USE_TLS = config('EMAIL_USE_TLS')
+DEFAULT_FROM_EMAIL= 'foodOnline Marketplace <srujana.app.dev@gmail.com>'
