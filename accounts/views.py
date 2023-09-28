@@ -4,11 +4,12 @@ from .forms import UserForm
 from .models import User, UserProfile
 from django.contrib import messages, auth
 from vendor.forms import VendorForm
-from .utils import detectUserRole, sendEmail
+from .utils import detectUserRole, sendVerificationEmail
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
+from vendor.models import Vendor
 
 # Create your views here.
 # Restrict the vendor from accessing the customer page
@@ -53,8 +54,8 @@ def registerUser(request):
 
             # send verification email
             mail_subject = 'Please activate your account'
-            email_template = 'accounts/emails/account_verification.html'
-            sendEmail(request, user, mail_subject, email_template)
+            email_template = 'accounts/emails/account_verification_email.html'
+            sendVerificationEmail(request, user, mail_subject, email_template)
 
             messages.success(request, "Your account is registered successfully. Please activate you account by email")
             return redirect(registerUser)
@@ -94,8 +95,8 @@ def registerVendor(request):
 
             # send verification email
             mail_subject = 'Please activate your account'
-            email_template = 'accounts/emails/account_verification.html'
-            sendEmail(request, user, mail_subject, email_template)
+            email_template = 'accounts/emails/account_verification_email.html'
+            sendVerificationEmail(request, user, mail_subject, email_template)
             
             messages.success(request, 'Your account is registered successfuly! Please wait for approval')
             return redirect(registerVendor)
@@ -168,7 +169,11 @@ def customerDashboard(request):
 @login_required(login_url='login')
 @user_passes_test(check_role_vendor)
 def vendorDashboard(request):
-    return render(request, 'accounts/vendorDashboard.html')
+    vendor = Vendor.objects.get(user= request.user)
+    context = {
+        'vendor': vendor,
+    }
+    return render(request, 'accounts/vendorDashboard.html', context)
 
 def forgotPassword(request):
     if request.method == 'POST':
@@ -180,7 +185,7 @@ def forgotPassword(request):
             #send reset password email
             mail_subject = 'Reset your password'
             email_template = 'accounts/emails/reset_password_email.html'
-            sendEmail(request, user, mail_subject, email_template)
+            sendVerificationEmail(request, user, mail_subject, email_template)
 
             messages.success(request, 'Password rest link is sent to your email')
             return redirect('login')

@@ -17,7 +17,7 @@ def detectUserRole(user):
         redirectUrl = '/admin'
         return redirectUrl
 
-def sendEmail(request, user, mail_subject, email_template):
+def sendVerificationEmail(request, user, mail_subject, email_template):
     from_email = settings.DEFAULT_FROM_EMAIL
     current_site = get_current_site(request)
     # body of mail
@@ -28,5 +28,13 @@ def sendEmail(request, user, mail_subject, email_template):
         'token': default_token_generator.make_token(user),   #make_token creates token from user, check_token creates user from token
     })
     to_email =  user.email
+    mail =  EmailMessage(mail_subject, message, from_email, to=[to_email])
+    mail.send()
+
+def sendNotificationEmail(mail_subject, email_template, context):
+    from_email = settings.DEFAULT_FROM_EMAIL
+    # body of mail
+    message = render_to_string(email_template, context)
+    to_email =  context['user'].email
     mail =  EmailMessage(mail_subject, message, from_email, to=[to_email])
     mail.send()
