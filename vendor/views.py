@@ -49,7 +49,7 @@ def vendorProfile(request):
 @user_passes_test(check_role_vendor)
 def menuBuilder(request):
     vendor = getVendor(request)
-    categories = Category.objects.filter(vendor=vendor).order_by('created_At')
+    categories = Category.objects.filter(vendor=vendor).order_by('created_at')
     context = {
         'categories': categories,
     }
