@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db.models.fields.related import OneToOneField
+from django.contrib.gis.db import models as gismodels
+from django.contrib.gis.geos import Point
 
 # UserManager class actually manages the users.
 # It extends the BaseUserManager class from the Django models because by default, Django uses two classes for managing the users.
@@ -101,6 +103,7 @@ class User(AbstractBaseUser):
 # setting the blank and null equal to two.because we don't know what will be the values of these address and all these things.
 # also, we are going to send the signals, post sales signals to create these user profile objects.
 # So that's why it is better to have the blank equal to two and not equal to two to ignore the errors. 
+#  SR id is the spatial reference identifier, which is a unique identifier associated with the specific coordinate system.
 class UserProfile(models.Model): 
     user = OneToOneField(User, on_delete=models.CASCADE, blank= True, null= True)
     profile_picture = models.ImageField(upload_to='users/profile_pictures', blank=True, null=True)
@@ -112,6 +115,7 @@ class UserProfile(models.Model):
     pin_code = models.CharField(max_length=6, blank=True, null=True)
     latitude = models.CharField(max_length=20, blank=True, null=True)
     longitude = models.CharField(max_length=20, blank=True, null=True)
+    location = gismodels.PointField(blank=True, null=True, srid=4326)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
@@ -120,5 +124,11 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.email
+    
+    def save(self, *args, **kwargs):
+        if self.latitude and self.longitude:
+            self.location = Point(float(self.longitude), float(self.latitude))
+            return super(UserProfile, self).save(*args, **kwargs)
+        return super(UserProfile, self).save(*args, **kwargs)
     
 
