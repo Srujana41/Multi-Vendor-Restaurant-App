@@ -83,9 +83,9 @@
 							<li class="has-border">
 								<figure>
 									{% if vendor.user_profile.profile_picture %}
-									<a href="#"><img src="{{ vendor.user_profile.profile_picture.url }}" class="attachment-full size-full wp-post-image" alt=""></a>
+									<a href="{% url 'vendorDetail' vendor.vendor_slug %}"><img src="{{ vendor.user_profile.profile_picture.url }}" class="attachment-full size-full wp-post-image" alt=""></a>
 									{% else %}
-									<a href="#"><img src="{% static 'images/default_profile.PNG' %}" class="attachment-full size-full wp-post-image" alt=""></a>
+									<a href="{% url 'vendorDetail' vendor.vendor_slug %}"><img src="{% static 'images/default_profile.PNG' %}" class="attachment-full size-full wp-post-image" alt=""></a>
 									{% endif %}
 								</figure>
 							</li>
@@ -131,7 +131,7 @@
 										
 										<div class="post-title">
 											<h5>
-												<a href="listing-detail.html">{{vendor}}</a>
+												<a href="{% url 'vendorDetail' vendor.vendor_slug %}">{{vendor}}</a>
 											</h5>
 										</div>
 										{% if vendor.user_profile.city %}
@@ -142,6 +142,10 @@
 										{% endif %} 
 										{% if vendor.user_profile.pin_code %}
 										<span>{{ vendor.user_profile.pin_code }}</span>
+										{% endif %} 
+										{% if vendor.kms %}
+											<br>
+											<span><small><b>{{vendor.kms}}km away</b></small></span>
 										{% endif %} 
 									</div>
 									
