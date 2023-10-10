@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from vendor.models import Vendor
+from vendor.models import Vendor, OpeningHour
 from menu.models import Category, FoodItem
 from django.db.models import Prefetch
 from django.http import JsonResponse, HttpResponse
@@ -10,6 +10,7 @@ from django.db.models import Q
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D 
 from django.contrib.gis.db.models.functions import Distance
+from datetime import date, datetime
 
 # Create your views here.
 def marketplace(request):
@@ -31,6 +32,32 @@ def vendorDetail(request, vendor_slug):
         )
     )
 
+    opening_hours = OpeningHour.objects.filter(vendor=vendor).order_by('day', '-from_hour')
+
+    # check current day's opening hour
+    today_date= date.today()
+    today = today_date.isoweekday()
+    # print(today)
+    current_opening_hours = OpeningHour.objects.filter(vendor=vendor, day=today)
+    # print(current_opening_hours)
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+
+    is_open = None
+    for current_hour in current_opening_hours:
+        if current_hour.is_closed:
+            is_open = False
+        else:
+            start = str(datetime.strptime(current_hour.from_hour, "%I:%M %p").time())
+            end = str(datetime.strptime(current_hour.to_hour, "%I:%M %p").time())
+            if current_time > start and current_time < end:
+                is_open = True
+                break
+            else:
+                is_open = False
+    print(is_open)
+
+
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
     else:
@@ -39,6 +66,9 @@ def vendorDetail(request, vendor_slug):
         'vendor':vendor,
         'categories': categories,
         'cart_items': cart_items,
+        'opening_hours': opening_hours,
+        'current_opening_hours': current_opening_hours,
+        'is_open': is_open
     }
 
     return render(request, 'marketplace/vendorDetail.html', context)
