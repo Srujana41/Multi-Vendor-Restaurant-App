@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'marketplace',
     'django.contrib.gis',
     'customers',
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -75,6 +76,7 @@ TEMPLATES = [
                 'accounts.context_processors.get_vendor',
                 'accounts.context_processors.get_user_profile',
                 'accounts.context_processors.get_google_api',
+                'accounts.context_processors.get_paypal_client_id',
                 'marketplace.context_processors.get_cart_count',
                 'marketplace.context_processors.get_cart_amount',
             ],
@@ -172,3 +174,11 @@ GOOGLE_API_KEY= 'AIzaSyDulm25cP4fqA5eSA-x6GFnbMQOlZZXA_4'
 os.environ['PATH'] = os.path.join(BASE_DIR, 'env\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
 os.environ['PROJ_LIB'] = os.path.join(BASE_DIR, 'env\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
 GDAL_LIBRARY_PATH = os.path.join(BASE_DIR, 'env\Lib\site-packages\osgeo\gdal304.dll')
+
+# Generate paypal client id and secret using sandbox and business accounts
+PAYPAL_CLIENT_ID = config('PAYPAL_CLIENT_ID')
+
+# In Django 4.0, there is something called cross origin opener policy. It will actually block your popups if you are trying to open the pop up using
+# the third party services. So when I clicked on this PayPal button, the PayPal actually tried to open the payment pop up.
+# But our cross origin opener policy did not allow it. So that's why blank popup opens up. To solve this  go to settings.py and below statement
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'

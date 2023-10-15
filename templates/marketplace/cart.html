@@ -29,7 +29,7 @@
                                                 <div class="image-holder"> 
                                                     <img src="{{item.foodItem.image.url}}" width="50px" height="50px" alt="Food Image">
                                                 </div>
-                                                <div class="text-holder">
+                                                <div class="text-holder" style="width: 50%;">
                                                     <h6>{{item.foodItem.food_title}}</h6>
                                                     <span>{{item.foodItem.description}}</span>
                                                     <a href="{% url 'vendorDetail' item.foodItem.vendor.vendor_slug %}" class="badge badge-warning">{{item.foodItem.vendor}}</a>
@@ -102,6 +102,8 @@
                                                     <span id="total">{{ grand_total }}</span>
                                                 </span>
                                             </li>
+
+                                            <a href="{% url 'checkout' %}" class="btn btn-danger w-100 p-2 mt-3">PROCEED TO CHECKOUT</a>
                                         </ul>
                                     </div>
                                 </div>

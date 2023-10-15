@@ -30,3 +30,31 @@
 .add_hour{
     padding: 7px 15px;
 }
+
+.quantity-holder{
+    display: inline-block;
+    position: absolute;
+    transform: translate(100%);
+    margin-top: 20px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* hide radio button */
+.payment-method [type=radio]{
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* Image style */
+.payment-method [type=radio] + img {
+    cursor: pointer;
+    padding: 5px;
+    margin: 0px 20px;
+}
+
+/* checked style */
+.payment-method input[type=radio]:checked+img{
+    outline: 2px solid red;
+}

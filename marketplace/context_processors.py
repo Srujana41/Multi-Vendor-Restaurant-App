@@ -35,7 +35,7 @@ def get_cart_amount(request):
             # {'CGST' : {'9.00':'2.16'}}
             tax_dict.update({tax_type: {str(tax_percentage): tax_amount}})
         
-        print(tax)
+        # print(tax)
         grand_total = subtotal + tax
     # print(subtotal)
     # print(grand_total)
